@@ -6,8 +6,8 @@ import { z } from 'zod';
  * (Sensitive type) and is never sent to the browser.
  */
 const schema = z.object({
-  /** Service-account JSON for the hrmemgems project, base64-encoded. */
-  FIREBASE_SERVICE_ACCOUNT_B64: z.string().min(1),
+  /** Service-account key JSON for the hrmemgems project (pasted as-is), or base64 of it. */
+  FIREBASE_SERVICE_ACCOUNT: z.string().min(1),
   FIREBASE_PROJECT_ID: z.string().default('hrmemgems'),
   FIREBASE_STORAGE_BUCKET: z.string().min(1),
   /**

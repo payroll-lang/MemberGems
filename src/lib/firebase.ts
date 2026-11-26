@@ -11,7 +11,8 @@ function firebaseApp(): App {
   const existing = getApps()[0];
   if (existing) return (app = existing);
   const e = env();
-  const credentials = JSON.parse(Buffer.from(e.FIREBASE_SERVICE_ACCOUNT_B64, 'base64').toString('utf8'));
+  const raw = e.FIREBASE_SERVICE_ACCOUNT.trim();
+  const credentials = JSON.parse(raw.startsWith('{') ? raw : Buffer.from(raw, 'base64').toString('utf8'));
   app = initializeApp({
     credential: cert(credentials),
     projectId: e.FIREBASE_PROJECT_ID,
