@@ -272,7 +272,9 @@ export async function parseWorkbook(buffer: ArrayBuffer | Buffer, importedBy: st
       const id = dateKey(r.WindowID).slice(0, 7) || s(r.WindowID).slice(0, 7);
       return {
         windowId: id,
-        label: s(r.Label),
+        label: r.Label instanceof Date
+          ? new Intl.DateTimeFormat('en-IN', { month: 'long', year: 'numeric', timeZone: 'UTC' }).format(r.Label)
+          : s(r.Label) || new Intl.DateTimeFormat('en-IN', { month: 'long', year: 'numeric', timeZone: 'UTC' }).format(new Date(`${id}-01T00:00:00Z`)),
         openDate: dateKey(r.OpenDate),
         closeDate: dateKey(r.CloseDate),
         taxDueDate: dateKey(r.TaxDueDate),

@@ -20,7 +20,7 @@ async function workbook(): Promise<Buffer> {
     ['EA-2', 'E101', 'Test Plan', 3.6, '', 1, 50, 50, '', ''],
   ]);
   add('FMV', [['Date', 'OpenPrice', 'ClosePrice', 'FMV', 'Source', 'EnteredBy', 'EnteredAt'], [new Date('2026-03-04T00:00:00Z'), '₹ 79.99', '₹ 79.56', '₹ 79.78', 'Manual', 'K', '']]);
-  add('Windows', [['WindowID', 'Label', 'OpenDate', 'CloseDate', 'TaxDueDate', 'Status'], ['2026-11', 'November 2026', '2026-11-01', '2026-11-30', '2026-12-25', 'Open']]);
+  add('Windows', [['WindowID', 'Label', 'OpenDate', 'CloseDate', 'TaxDueDate', 'Status'], ['2026-11', new Date('2026-11-01T00:00:00Z'), '2026-11-01', '2026-11-30', '2026-12-25', 'Open']]);
   add('FundPartners', [['PartnerName', 'Status', 'ContactEmails'], ['Funds India with Bajaj', 'Active', 'a@x.com, b@x.com']]);
   add('Users', [
     ['UserID', 'Role', 'Name', 'LoginEmail', 'FundPartnerName', 'PasswordSalt', 'PasswordHash', 'Status', 'MustResetPassword'],
@@ -49,7 +49,7 @@ describe('legacy workbook import', () => {
     expect(p.report.skipped['grants: plan "Test Plan" not allowed']).toBe(1);
     expect(p.report.skipped['Applications (test data, not imported)']).toBe(1);
     expect(p.fmv[0]).toMatchObject({ date: '2026-03-04', openPrice: 79.99, closePrice: 79.56, fmv: 79.78 });
-    expect(p.windows[0]).toMatchObject({ windowId: '2026-11', status: 'Open', taxDueDate: '2026-12-25' });
+    expect(p.windows[0]).toMatchObject({ windowId: '2026-11', label: 'November 2026', status: 'Open', taxDueDate: '2026-12-25' });
     expect(p.partners[0]).toMatchObject({ partnerId: 'FUNDS-INDIA-WITH-BAJAJ', contactEmails: ['a@x.com', 'b@x.com'] });
     const [emp, fp] = p.users;
     expect(emp).toMatchObject({ userId: 'E100', role: 'Employee', loginEmails: ['one@example.com'], mustResetPassword: false });
