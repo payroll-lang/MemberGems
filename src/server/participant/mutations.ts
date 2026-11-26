@@ -1,7 +1,7 @@
 import 'server-only';
 import {
-  PARTNER_STATUS, canEditOptions, count, paymentReference, editClearsSignature, fmvErrorMessage, inr, inr2, monthYear, num, prettyDate,
-  price, round2, shares as sharesOf, submitBlocker, taxDueDateFor, trim, validateDemat, validateExercisePaymentAmount,
+  PARTNER_STATUS, canEditOptions, count, paymentReference, fmvErrorMessage, inr, inr2, monthYear, num, prettyDate,
+  price, round2, submitBlocker, taxDueDateFor, trim, validateDemat, validateExercisePaymentAmount,
   validateLines, validateMobile, validatePan, validatePaymentDate, validateSignature, validateTaxPaymentEntry,
   validateUtr, type LineRequest,
 } from '@/domain';
@@ -19,6 +19,7 @@ import {
 import { UserError, toActionResult, type ActionResult } from '../core/errors';
 import { buildNoticeModel } from '../core/notice';
 import { renderNoticePdf } from '../core/noticePdf';
+import { AppWriter, repriceInto } from '../appWriter';
 import { uid, type Tx } from '../db';
 import { emailFor, employeeRef } from '../employees';
 import { requireAttachable, saveGeneratedFile, supersede } from '../files';
@@ -75,46 +76,6 @@ async function run(user: UserDoc, label: string, body: (tx: Tx, st: ParticipantS
     // Another tab created the same application (or line) first: the create lost the race.
     if ((e as { code?: unknown })?.code === 6) return { ok: false, error: STALE_MESSAGE };
     return toActionResult(e, label);
-  }
-}
-
-/** Collects the changes to one application and writes them once. */
-class AppWriter {
-  doc: ApplicationDoc;
-  private changed = new Set<keyof ApplicationDoc>();
-  constructor(doc: ApplicationDoc, private readonly isNew: boolean) {
-    this.doc = structuredClone(doc);
-  }
-  set<K extends keyof ApplicationDoc>(k: K, v: ApplicationDoc[K]) {
-    this.doc[k] = v;
-    this.changed.add(k);
-  }
-  /** AppStore.touchSection: an edited section goes back to Pending for review. */
-  touch(section: SectionKey) {
-    this.set('review', { ...this.doc.review, [section]: 'Pending' });
-  }
-  /**
-   * AGREED CHANGE: editing a signed application clears the signature, so the
-   * notice is signed again over the corrected figures. Returns whether it did.
-   */
-  clearSignatureFor(section: SectionKey, tx: Tx, now: string): boolean {
-    if (!editClearsSignature(section, this.doc.notice.signedAt)) return false;
-    if (this.doc.notice.fileId) supersede(tx, this.doc.notice.fileId, now);
-    this.set('notice', { signatureName: '', signedAt: '', place: this.doc.notice.place, fileId: '' });
-    this.touch('notice');
-    return true;
-  }
-  write(tx: Tx, now: string) {
-    const ref = appRef(this.doc.appId);
-    this.doc.rev = (this.doc.rev || 0) + 1;
-    this.doc.updatedAt = now;
-    if (this.isNew) {
-      tx.create(ref, this.doc);
-      return;
-    }
-    const patch: Record<string, unknown> = { rev: this.doc.rev, updatedAt: now };
-    this.changed.forEach((k) => { patch[k] = this.doc[k]; });
-    tx.update(ref, patch);
   }
 }
 
@@ -463,7 +424,7 @@ export function saveExercisePayment(user: UserDoc, input: { expect: Expect; fina
       w.set('fmvDate', pinned.fmvDate);
       w.set('fmvValue', pinned.fmv);
       w.set('taxDueDate', taxDueDateFor(pinned.date, settings.portal));
-      repriceInto(w, st, lines, tx, now);
+      repriceInto(w, { grants: st.grants, defaultExercisePrice: settings.portal.exercisePrice, priceOptions: priceOptions(st, app.appId) }, lines, tx, now);
       if (pr && pr.status === PARTNER_STATUS.ASSIGNED && pr.taxAmount !== w.doc.taxAmount) {
         tx.update(partnerRequestRef(pr.requestId), { taxAmount: w.doc.taxAmount });
       }
@@ -492,42 +453,6 @@ export function saveExercisePayment(user: UserDoc, input: { expect: Expect; fina
       ],
     };
   });
-}
-
-/**
- * AppStore.reprice, for an application the participant is editing (Draft or
- * Sent Back): the multiplier and price are re-read from the grant, so a
- * corrected grant master flows through. Never used on a submitted
- * application (AGREED CHANGE: frozen once submitted).
- */
-function repriceInto(w: AppWriter, st: ParticipantState, lines: readonly ApplicationLineDoc[], tx: Tx, now: string): void {
-  if (!lines.length) return;
-  const byId = new Map(st.grants.map((g) => [g.grantId, g]));
-  const dflt = st.settings.portal.exercisePrice;
-  const input = lines.map((l) => {
-    const g = byId.get(l.grantId);
-    const multiplier = (g?.multiplier || l.multiplier || 1);
-    const p = g?.exercisePrice || l.exercisePrice || dflt;
-    return {
-      lineId: l.lineId, grantId: l.grantId, planName: g?.planName || l.planName, multiplier, options: l.optionsExercised,
-      shares: sharesOf(l.optionsExercised, multiplier), exercisePrice: p,
-      lineExerciseAmount: round2(l.optionsExercised * p),
-    };
-  });
-  const priced = price(input, w.doc.fmvValue || null, w.doc.taxRatePercent, priceOptions(st, w.doc.appId));
-  priced.lines.forEach((l) => {
-    tx.update(linesCol(w.doc.appId).doc(l.lineId), {
-      planName: l.planName, multiplier: l.multiplier, exercisePrice: l.exercisePrice, lineExerciseAmount: l.lineExerciseAmount,
-      sharesAllotted: l.shares, perquisitePerShare: l.perquisitePerShare, linePerquisite: l.linePerquisite, updatedAt: now,
-    });
-  });
-  w.set('totalOptions', priced.totalOptions);
-  w.set('totalShares', priced.totalShares);
-  w.set('exerciseAmount', priced.exerciseAmount);
-  w.set('perquisiteAmount', priced.perquisiteAmount);
-  w.set('taxAmount', priced.taxAmount);
-  w.set('taxMethod', priced.taxMethod);
-  w.set('taxBreakdown', priced.taxBreakdown);
 }
 
 /* ================= 4. tax ================= */

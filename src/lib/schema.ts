@@ -27,6 +27,7 @@ export const COL = {
   auditLog: 'auditLog',
   emailLog: 'emailLog', // id = dedupe key when the email must go only once
   files: 'files', // id = fileId; metadata for objects in Cloud Storage
+  jobs: 'jobs', // id = job key; state of a scheduled job that runs in batches (e.g. 'window_open-2026-12')
 } as const;
 
 export type Role = 'Admin' | 'Employee' | 'FundPartner';
@@ -342,4 +343,24 @@ export interface FileDoc {
   uploadedAt: string;
   /** Superseded files are kept (never deleted) for the audit trail. */
   supersededAt: string;
+}
+
+/** Added by the scheduled jobs: a bulk send that runs in batches across invocations. */
+export interface JobStateDoc {
+  jobId: string;
+  kind: 'window_open';
+  windowId: string;
+  status: 'running' | 'done' | 'abandoned';
+  /** The last employee id processed (documents are walked in id order). */
+  cursor: string;
+  sent: number;
+  skipped: number;
+  failed: number;
+  considered: number;
+  /** A run holds the job until this instant, so two runs never overlap. */
+  leaseUntil: string;
+  startedAt: string;
+  updatedAt: string;
+  finishedAt: string;
+  lastMessage: string;
 }

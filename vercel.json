@@ -1,0 +1,24 @@
+{
+  "$schema": "https://openapi.vercel.sh/vercel.json",
+  "regions": ["bom1"],
+  "schedules": {
+    "esop-daily": {
+      "schedule": "0 8 * * *",
+      "timezone": "Asia/Kolkata",
+      "path": "/api/jobs/daily",
+      "requestMethod": "GET"
+    },
+    "esop-price-check": {
+      "schedule": "0 20 * * *",
+      "timezone": "Asia/Kolkata",
+      "path": "/api/jobs/price-check",
+      "requestMethod": "GET"
+    },
+    "esop-announce": {
+      "schedule": "*/15 8-21 * * *",
+      "timezone": "Asia/Kolkata",
+      "path": "/api/jobs/announce",
+      "requestMethod": "GET"
+    }
+  }
+}

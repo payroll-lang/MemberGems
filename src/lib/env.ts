@@ -24,6 +24,15 @@ const schema = z.object({
   SETUP_KEY: z.string().min(12).optional(),
   /** Secret that scheduled jobs must present (Authorization: Bearer ...). */
   CRON_SECRET: z.string().min(16).optional(),
+  /**
+   * The Workspace mailbox mail is sent as (esop@pw.live), through the Gmail
+   * API with domain-wide delegation. Unset = every email is logged, not sent.
+   */
+  EMAIL_SENDER: z.string().optional(),
+  /** Fallbacks for the settings keys of the same name (settings win when set). */
+  EMAIL_SENDER_NAME: z.string().optional(),
+  EMAIL_REPLY_TO: z.string().optional(),
+  SUPPORT_EMAIL: z.string().optional(),
 });
 
 export type Env = z.infer<typeof schema>;
