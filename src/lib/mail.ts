@@ -30,7 +30,7 @@ export type TemplateName =
   | 'partner_payment_fed_employee' | 'partner_payment_fed_admin'
   | 'partner_declined_employee' | 'partner_declined_admin'
   | 'application_submitted_employee' | 'application_submitted_admin'
-  | 'application_sent_back' | 'application_approved' | 'application_rejected'
+  | 'application_sent_back' | 'application_approved' | 'application_rejected' | 'application_repriced'
   | (string & {});
 
 export interface SendOptions {

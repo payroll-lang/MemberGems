@@ -476,6 +476,25 @@ const T: Record<string, Template> = {
       h.link,
   }),
 
+  application_repriced: (d, h) => ({
+    subject: 'Your ESOP application has been updated — ' + trim(d.appId),
+    body:
+      p('Hello ' + e(d.name) + ',') +
+      p('The ESOP team has recalculated application ' + e(d.appId) + '.' + (trim(d.reason) ? ' Reason: ' + e(d.reason) + '.' : '')) +
+      kv([
+        ['Options', e(count(d.totalOptions as Numeric))],
+        ['Shares', e(count(d.totalShares as Numeric))],
+        ['Exercise amount', e(inr(d.exerciseAmount as Numeric))],
+        ['FMV', e(inr(d.fmv as Numeric)) + (trim(d.fmvDate) ? ' (' + e(d.fmvDate) + ')' : '')],
+        ['Perquisite value', e(inr(d.perquisite as Numeric))],
+        ['Tax on this exercise', e(inr(d.tax as Numeric)) + (trim(d.previousTax) !== '' && d.previousTax !== d.tax ? ' (was ' + e(inr(d.previousTax as Numeric)) + ')' : '')],
+        ['Tax due by', e(d.taxDueDate)],
+        ['Still to pay', e(inr(d.stillToPay as Numeric))],
+      ]) +
+      p('Open the portal to see how the figures were worked out. If more tax is now due, please pay the balance by the due date.') +
+      h.link,
+  }),
+
   application_rejected: (d) => ({
     subject: 'Exercise application closed — ' + trim(d.appId),
     body:

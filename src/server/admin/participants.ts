@@ -187,7 +187,8 @@ export function saveEmployee(user: UserDoc, input: EmployeeInput): Promise<Actio
         updatedAt: now,
       };
       if (!next.name) throw new UserError('Enter the participant’s name.');
-      tx.set(ref, next);
+      // merge: fields this screen does not know (carried over from the sheet) are kept.
+      tx.set(ref, next, { merge: true });
       return { existing, next };
     });
     const rateChanged = !!rate && rate.ok && result.existing?.taxRatePercent !== rate.value;

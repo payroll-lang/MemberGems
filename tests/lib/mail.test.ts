@@ -38,13 +38,14 @@ const SAMPLES: Record<string, Record<string, unknown>> = {
   application_sent_back: { name: 'Asha Rao', appId: 'APP-1', sections: ['demat and PAN', 'tax payment'], remarks: 'The CML is unreadable.' },
   application_approved: { name: 'Asha Rao', appId: 'APP-1', totalOptions: 2370, exerciseAmount: 2370, perquisite: 1196376, tax: 373269, dpId: 'IN300123', clientId: '12345678' },
   application_rejected: { name: 'Asha Rao', appId: 'APP-1', remarks: 'Duplicate application.' },
+  application_repriced: { name: 'Asha Rao', appId: 'APP-1', reason: 'Tax sheet updated', totalOptions: 2370, totalShares: 8532, exerciseAmount: 2370, fmv: 140.5, fmvDate: '02 Dec 2026', perquisite: 1196376, tax: 380000, previousTax: 373269, taxDueDate: '25 Dec 2026', stillToPay: 6731 },
   window_closing: { name: 'Asha Rao', appId: 'APP-1', windowLabel: 'December 2026', closeDate: '30 Dec 2026', daysLeft: 0, pending: 'Tax payment, Exercise notice' },
 };
 
 describe('email templates', () => {
-  it('covers every legacy Mailer.gs template (25)', () => {
+  it('covers the 25 legacy Mailer.gs templates plus application_repriced', () => {
     expect([...TEMPLATE_NAMES].sort()).toEqual(Object.keys(SAMPLES).sort());
-    expect(TEMPLATE_NAMES.length).toBe(25);
+    expect(TEMPLATE_NAMES.length).toBe(26);
   });
 
   it.each(Object.keys(SAMPLES))('%s renders subject, HTML and text', (name) => {
