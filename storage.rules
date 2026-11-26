@@ -1,0 +1,9 @@
+rules_version = '2';
+// Documents are uploaded and served only through the server (signed URLs).
+service firebase.storage {
+  match /b/{bucket}/o {
+    match /{allPaths=**} {
+      allow read, write: if false;
+    }
+  }
+}
