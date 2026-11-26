@@ -9,7 +9,7 @@ import { audit } from '@/lib/audit';
 import { db } from '@/lib/firebase';
 import { sendTemplate } from '@/lib/mail';
 import type {
-  ApplicationDoc, ApplicationLineDoc, EmployeeDoc, PartnerRequestDoc, SectionKey, TaxPaymentDoc, UserDoc,
+  ApplicationDoc, ApplicationLineDoc, EmployeeDoc, PartnerRequestDoc, TaxPaymentDoc, UserDoc,
 } from '@/lib/schema';
 import { nowIso, todayIst } from '@/lib/time';
 import {
