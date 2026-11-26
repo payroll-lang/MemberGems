@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <base target="_top">
+  <meta charset="utf-8">
+  <!-- No <meta name="viewport"> here on purpose: HtmlService strips meta tags
+       out of the page, which is why doGet has to use addMetaTag. But that only
+       reaches the OUTER wrapper, and this document runs in a frame inside it.
+       Without a viewport of its own the frame laid itself out at a phone
+       browser's default 980px and showed the left third of the portal — fine
+       on a desktop, broken on every phone. A tag added by script is not
+       sanitised, so the first script block below sets it. -->
+  <title><?= companyName ?> — ESOP Exercise Portal</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <!-- Dancing Script is the signature face on the exercise notice. Loaded
+       here so the signature does not depend on a script font happening to be
+       installed on the reader's machine — without it the rule fell back to
+       the bold sans of the surrounding row and the signature was
+       indistinguishable from the printed name above it. -->
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Newsreader:ital,opsz,wght@0,6..72,300..600;1,6..72,300..400&family=Archivo:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&family=Dancing+Script:wght@500;600&display=swap">
+  <?!= include('Styles'); ?>
+</head>
+<body>
+
+
+  <div id="boot" class="boot">
+    <div class="boot-inner">
+      <div class="boot-mark"></div>
+      <div class="boot-text">Loading the ESOP portal…</div>
+      <div class="boot-fact" id="bootFact" aria-live="polite"></div>
+    </div>
+  </div>
+
+
+  <script>
+    // The first loading screen shows before any server call has returned, so
+    // its facts are written into the page rather than fetched. Rotating them
+    // makes the wait — which Apps Script always has — worth something.
+    // Give this frame a viewport before anything is laid out. A static meta
+    // tag would be stripped; this one survives because script builds it.
+    (function () {
+      try {
+        var m = document.querySelector('meta[name=viewport]');
+        if (!m) {
+          m = document.createElement('meta');
+          m.setAttribute('name', 'viewport');
+          document.head.appendChild(m);
+        }
+        m.setAttribute('content', 'width=device-width, initial-scale=1');
+      } catch (e) { /* desktop is unaffected either way */ }
+    })();
+
+
+    (function () {
+      var facts = <?!= facts ?>;
+      // Kept on the window so the working screen can use the same list from
+      // the very first click, before any server call has come back.
+      window._facts = facts || [];
+      var host = document.getElementById('bootFact');
+      if (!host || !facts || !facts.length) return;
+      var i = Math.floor(Math.random() * facts.length);
+      var show = function () {
+        host.style.opacity = 0;
+        setTimeout(function () {
+          host.innerHTML = '<span>Did you know</span> ' + facts[i % facts.length] + '?';
+          host.style.opacity = 1;
+          i++;
+        }, 220);
+      };
+      show();
+      window._bootFacts = setInterval(show, 4200);
+    })();
+  </script>
+
+
+  <!-- Shown whenever a request is in flight, so no action ever looks dead.
+       Every call goes through one function, which is what makes this
+       reliable rather than something each handler has to remember. -->
+  <div id="netbar" class="netbar" hidden aria-hidden="true"></div>
+
+
+  <!-- The working screen. The thin bar above is enough for a fast call; this
+       takes over when one runs long, so a slow save cannot be mistaken for a
+       dead button, and holds the page still while the server is thinking. -->
+  <div id="working" class="working" hidden role="status" aria-live="polite">
+    <div class="working-card">
+      <div class="boot-mark"></div>
+      <div class="working-what" id="workingWhat">Working…</div>
+      <div class="boot-fact" id="workingFact"></div>
+    </div>
+  </div>
+
+
+  <div id="app" hidden></div>
+
+
+  <div id="toast" class="toast" hidden role="status" aria-live="polite"></div>
+
+
+  <div id="modal" class="modal" hidden role="dialog" aria-modal="true">
+    <div class="modal-card">
+      <button class="modal-x" id="modalClose" aria-label="Close">&times;</button>
+      <div id="modalBody"></div>
+    </div>
+  </div>
+
+
+  <?!= include('App'); ?>
+</body>
+</html>
+
+

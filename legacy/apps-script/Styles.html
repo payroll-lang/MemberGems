@@ -1,0 +1,610 @@
+<style>
+/* ============================================================
+   ESOP Exercise Portal — one stylesheet.
+   Palette taken from share-certificate safety paper: bone ground,
+   engraved green, ochre for anything not yet done, oxide for money out.
+   ============================================================ */
+
+
+:root{
+  --ground:#f6f7f3;
+  --surface:#ffffff;
+  --surface-2:#f0f2ec;
+  --ink:#14211c;
+  --ink-2:#4a5b53;
+  --ink-3:#7c8b83;
+  --rule:#dde2da;
+  --rule-strong:#c2cabe;
+  --accent:#1b6046;
+  --accent-2:#2e8b65;
+  --accent-wash:#e8efe9;
+  --good:#1b6046;
+  --warn:#a8741a;
+  --warn-wash:#f7efdd;
+  --crit:#a33529;
+  --crit-wash:#f8ebe8;
+  --shadow:0 1px 2px rgba(20,33,28,.06);
+  --shadow-lift:0 6px 24px rgba(20,33,28,.13);
+  color-scheme:light;
+}
+
+
+*{box-sizing:border-box}
+html,body{margin:0;padding:0}
+body{
+  background:var(--ground);
+  color:var(--ink);
+  font-family:"Archivo","Segoe UI",system-ui,-apple-system,sans-serif;
+  font-size:14px;
+  line-height:1.5;
+  -webkit-font-smoothing:antialiased;
+}
+[hidden]{display:none !important}
+a{color:var(--accent)}
+
+
+/* ---------------- boot ---------------- */
+.boot{position:fixed;inset:0;display:grid;place-items:center;background:var(--ground);z-index:50}
+.boot-inner{text-align:center}
+.boot-mark{
+  width:34px;height:34px;margin:0 auto 14px;border-radius:50%;
+  border:2px solid var(--rule-strong);border-top-color:var(--accent);
+  animation:spin .8s linear infinite;
+}
+@keyframes spin{to{transform:rotate(360deg)}}
+.boot-text{font-size:12.5px;color:var(--ink-2);letter-spacing:.02em}
+/* The rotating "did you know" line under a loading spinner. Every screen in
+   this portal costs a round trip, so the wait is unavoidable — this makes it
+   tell the reader something instead of nothing. */
+.boot-fact{
+  max-width:430px;margin:18px auto 0;padding:0 18px;
+  font-family:"Newsreader",Georgia,serif;font-size:15.5px;line-height:1.55;
+  color:var(--ink);transition:opacity .22s ease;
+}
+.boot-fact span{
+  display:block;font-family:"Archivo",system-ui,sans-serif;
+  font-size:9.5px;letter-spacing:.13em;text-transform:uppercase;
+  color:var(--ink-3);margin-bottom:5px;
+}
+/* The same panel, used inside the app rather than over the whole window. */
+.loadbox{display:grid;place-items:center;padding:64px 0 72px;text-align:center}
+.loadwhat{font-size:12.5px;color:var(--ink-2);letter-spacing:.02em;margin-top:2px}
+@media (prefers-reduced-motion:reduce){.boot-mark{animation:none;border-top-color:var(--rule-strong)}}
+
+
+/* ---------------- shell ---------------- */
+.topbar{
+  background:var(--surface);border-bottom:1px solid var(--rule-strong);
+  position:sticky;top:0;z-index:20;
+}
+.topbar-in{
+  max-width:1180px;margin:0 auto;padding:11px 22px;
+  display:flex;align-items:center;gap:20px;justify-content:space-between;
+}
+.brand{display:flex;align-items:center;gap:12px;min-width:0}
+.brand > div{display:flex;align-items:baseline;gap:11px;min-width:0}
+/* The company logo. Height-constrained with width:auto so the aspect ratio
+   is never distorted, whatever file is configured. */
+.logo{display:block;width:auto;flex:0 0 auto}
+.logo.mark{height:30px}
+.logo.crest{height:52px;margin-bottom:14px}
+.brand .co{
+  font-size:10.5px;letter-spacing:.13em;text-transform:uppercase;
+  color:var(--ink-3);font-weight:500;white-space:nowrap;
+}
+.brand .nm{font-family:"Newsreader",Georgia,serif;font-size:19px;letter-spacing:-.01em;white-space:nowrap}
+.topnav{display:flex;gap:2px;flex-wrap:wrap}
+.topnav button{
+  font:inherit;font-size:13px;background:none;border:0;cursor:pointer;color:var(--ink-2);
+  padding:6px 11px;border-radius:2px;
+}
+.topnav button:hover{background:var(--surface-2);color:var(--ink)}
+.topnav button[aria-current="true"]{background:var(--accent-wash);color:var(--accent);font-weight:500}
+.who{display:flex;align-items:center;gap:12px;font-size:12.5px;color:var(--ink-2);white-space:nowrap}
+.who b{color:var(--ink);font-weight:600}
+.who .role{
+  font-size:9.5px;letter-spacing:.09em;text-transform:uppercase;
+  border:1px solid var(--rule-strong);border-radius:2px;padding:2px 6px;color:var(--ink-3);
+}
+
+
+.page{max-width:1180px;margin:0 auto;padding:26px 22px 80px}
+
+
+/* ---------------- typography ---------------- */
+h1.title{
+  font-family:"Newsreader",Georgia,serif;font-weight:400;
+  font-size:clamp(26px,3.6vw,36px);line-height:1.08;margin:0;letter-spacing:-.013em;
+  text-wrap:balance;
+}
+h1.title em{font-style:italic;color:var(--accent)}
+h2.sec{font-family:"Newsreader",Georgia,serif;font-weight:400;font-size:21px;margin:0;letter-spacing:-.01em}
+h3.sub{font-size:13px;font-weight:600;margin:0}
+.eyebrow{font-size:10.5px;letter-spacing:.13em;text-transform:uppercase;color:var(--ink-3);font-weight:500}
+.lede{color:var(--ink-2);margin:.4em 0 0;max-width:68ch}
+.dim{color:var(--ink-3)}
+.mono{font-family:"IBM Plex Mono",ui-monospace,monospace;font-variant-numeric:tabular-nums}
+.nowrap{white-space:nowrap}
+
+
+/* ---------------- figure row ---------------- */
+.figures{display:grid;grid-template-columns:repeat(auto-fit,minmax(170px,1fr));border-bottom:1px solid var(--rule);margin:22px 0 0}
+.fig{padding:16px 20px 18px 0;border-right:1px solid var(--rule)}
+.fig:last-child{border-right:0}
+.fig .k{font-size:10px;letter-spacing:.1em;text-transform:uppercase;color:var(--ink-3);font-weight:500}
+.fig .v{font-family:"IBM Plex Mono",monospace;font-variant-numeric:tabular-nums;font-size:23px;line-height:1.15;margin-top:7px;letter-spacing:-.02em}
+.fig .s{font-size:11.5px;color:var(--ink-2);margin-top:3px}
+.fig.accent .v{color:var(--accent)}
+.fig.warn .v{color:var(--warn)}
+.fig.crit .v{color:var(--crit)}
+
+
+/* ---------------- cards & panels ---------------- */
+.panel{background:var(--surface);border:1px solid var(--rule);border-radius:2px;box-shadow:var(--shadow)}
+/* The standing confirmation of a completed action. Deliberately not a toast:
+   it is the participant's on-screen evidence that the thing happened. */
+.ackpanel{border-left:3px solid var(--accent)}
+/* Numbered steps on the admin guide. */
+.guidestep{display:flex;gap:14px;align-items:flex-start;margin-top:18px}
+.guidestep + .guidestep{padding-top:18px;border-top:1px solid var(--rule)}
+.guidestep .num{
+  flex:0 0 26px;height:26px;border-radius:50%;
+  border:1px solid var(--rule-strong);color:var(--ink-3);
+  display:flex;align-items:center;justify-content:center;
+  font-family:"IBM Plex Mono",monospace;font-size:12px;
+}
+.guidestep code,.panel-bd code{
+  font-family:"IBM Plex Mono",monospace;font-size:.88em;
+  padding:1px 4px;border-radius:3px;background:var(--surface-2);border:1px solid var(--rule);
+}
+.ackhd{display:flex;align-items:center;gap:12px;flex-wrap:wrap}
+.ackhd .btn{margin-left:auto}
+.ticket{
+  display:inline-block;padding:2px 8px;border-radius:3px;
+  border:1px solid var(--accent);color:var(--accent);
+  font-size:9.5px;letter-spacing:.13em;text-transform:uppercase;font-weight:600;
+}
+.panel-hd{padding:14px 18px;border-bottom:1px solid var(--rule);display:flex;justify-content:space-between;align-items:baseline;gap:14px;flex-wrap:wrap}
+.panel-bd{padding:18px}
+.panel-ft{padding:13px 18px;border-top:1px solid var(--rule);background:var(--surface-2);display:flex;gap:10px;flex-wrap:wrap;align-items:center}
+
+
+.stack{display:flex;flex-direction:column;gap:20px}
+.row{display:flex;gap:12px;flex-wrap:wrap;align-items:center}
+.row.tight{gap:8px}
+.grid2{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:16px}
+.grid3{display:grid;grid-template-columns:repeat(auto-fit,minmax(210px,1fr));gap:16px}
+.spread{display:flex;justify-content:space-between;gap:16px;align-items:baseline;flex-wrap:wrap}
+
+
+.callout{border:1px solid var(--rule-strong);border-left:3px solid var(--accent);background:var(--surface);padding:12px 15px;border-radius:2px}
+.callout.warn{border-left-color:var(--warn);background:var(--warn-wash)}
+.callout.crit{border-left-color:var(--crit);background:var(--crit-wash)}
+.callout.info{border-left-color:var(--accent);background:var(--accent-wash)}
+.callout h4{margin:0 0 5px;font-size:12.5px;font-weight:600}
+.callout p{margin:0;font-size:13px;color:var(--ink-2)}
+.callout p + p{margin-top:7px}
+.bankbox{font-family:"IBM Plex Mono",monospace;font-size:12.5px;white-space:pre-line;margin-top:8px;color:var(--ink)}
+
+
+/* ---------------- stepper ---------------- */
+.stepper{display:flex;flex-wrap:wrap;gap:0;border:1px solid var(--rule);background:var(--surface);border-radius:2px;overflow:hidden;box-shadow:var(--shadow)}
+.step{
+  flex:1 1 150px;min-width:0;text-align:left;background:none;border:0;border-right:1px solid var(--rule);
+  font:inherit;cursor:pointer;padding:12px 14px;position:relative;color:var(--ink-2);
+}
+.step:last-child{border-right:0}
+.step:hover{background:var(--surface-2)}
+.step[aria-current="true"]{background:var(--accent-wash)}
+.step .n{
+  font-family:"IBM Plex Mono",monospace;font-size:10.5px;color:var(--ink-3);
+  display:flex;align-items:center;gap:6px;
+}
+.step .l{font-size:12.5px;margin-top:4px;color:var(--ink);font-weight:500;line-height:1.3}
+.step[aria-current="true"] .l{color:var(--accent)}
+.step .tick{width:13px;height:13px;border-radius:50%;border:1px solid var(--rule-strong);display:inline-grid;place-items:center;font-size:9px;line-height:1}
+.step.done .tick{background:var(--accent);border-color:var(--accent);color:#fff}
+.step.done .tick::after{content:"✓"}
+/* A step the ESOP team has sent back: not done, however fully it was filled in. */
+.step.back{background:var(--crit-wash)}
+.step.back .tick{background:var(--crit);border-color:var(--crit);color:#fff}
+.step.back .tick::after{content:"!"}
+.step.back .n,.step.back .l{color:var(--crit)}
+.step.blocked{opacity:.55;cursor:not-allowed}
+
+
+/* ---------------- tables ---------------- */
+.tablewrap{overflow-x:auto}
+/* Every data table lives in a .tablewrap that scrolls, so the floor below is
+ * about legibility, not fitting: a table is allowed to overflow and scroll,
+ * but never to crush its columns into each other.
+ *
+ * 520px was the old floor, chosen when the tables were small. The real ones
+ * grew to seven, ten, even twelve columns — the verification queue and the
+ * participants list among them — which at 520px is about 43px a column, so
+ * headings and values collided. 880px suits those; the handful of genuinely
+ * narrow tables set a smaller floor of their own.
+ */
+table.data{width:100%;border-collapse:collapse;font-size:13px;min-width:880px}
+table.data th{
+  text-align:left;font-size:9.5px;letter-spacing:.09em;text-transform:uppercase;
+  color:var(--ink-3);font-weight:500;padding:9px 12px 9px 0;
+  border-bottom:1px solid var(--rule-strong);white-space:nowrap;background:var(--surface);
+}
+table.data td{padding:10px 12px 10px 0;border-bottom:1px solid var(--rule);vertical-align:top}
+table.data tr:last-child td{border-bottom:0}
+/* Right-aligned numeric columns.
+ *
+ * The whole gap between two columns comes from the RIGHT padding of the cell
+ * on the left, because cells have no left padding. So padding-right:0 here —
+ * which is what this rule used to say — left a right-aligned number touching
+ * whatever followed it: "₹128.57Manual", "FMVSOURCE" in the heading. It read
+ * as a rendering fault and appeared in every table with a numeric column
+ * followed by another column, across both portals.
+ *
+ * The last cell in a row still sits flush to the table edge, which is what
+ * padding-right:0 was reaching for in the first place.
+ */
+table.data th.n,table.data td.n{
+  text-align:right;padding-right:20px;
+  font-family:"IBM Plex Mono",monospace;font-variant-numeric:tabular-nums;
+  white-space:nowrap;
+}
+table.data th:last-child,table.data td:last-child{padding-right:0}
+/* A cell holding buttons.
+ *
+ * `class="row tight"` was being put on the <td> itself, which made the cell a
+ * flex container — a table cell cannot be one and still lay out as a cell, so
+ * the buttons escaped their column and sat on top of the number to their
+ * left. The flex row belongs in a div INSIDE the cell.
+ */
+table.data td.actions{text-align:right;white-space:nowrap;padding-left:18px}
+table.data td.actions > .row{justify-content:flex-end;flex-wrap:nowrap}
+/* Numbers and dates must never be broken across lines; prose may wrap. */
+table.data td.nowrap,table.data th.nowrap{white-space:nowrap}
+table.data tbody tr.clickable{cursor:pointer}
+table.data tbody tr.clickable:hover{background:var(--surface-2)}
+table.data tfoot td{border-top:1px solid var(--rule-strong);border-bottom:0;font-weight:600;padding-top:11px}
+
+
+/* ---------------- pills ---------------- */
+.pill{
+  display:inline-block;font-size:9.5px;letter-spacing:.07em;text-transform:uppercase;font-weight:500;
+  padding:3px 7px;border-radius:2px;white-space:nowrap;border:1px solid transparent;
+}
+.pill.ok{color:var(--good);background:var(--accent-wash);border-color:#cfe0d5}
+.pill.wait{color:var(--warn);background:var(--warn-wash);border-color:#e8d5ab}
+.pill.bad{color:var(--crit);background:var(--crit-wash);border-color:#e8c9c3}
+.pill.neutral{color:var(--ink-3);background:var(--surface-2);border-color:var(--rule)}
+
+
+/* ---------------- forms ---------------- */
+.field{margin:0}
+.field + .field{margin-top:16px}
+.field label,.flabel{
+  display:block;font-size:10.5px;letter-spacing:.1em;text-transform:uppercase;
+  color:var(--ink-3);font-weight:500;margin-bottom:6px;
+}
+.field .hint{font-size:11.5px;color:var(--ink-2);margin-top:6px;line-height:1.5}
+.field .hint.err{color:var(--crit)}
+/* Says which fields are refused at submit, rather than leaving it to be
+   discovered. A word reads better than a bare asterisk. */
+.req{
+  display:inline-block;margin-left:7px;padding:1px 5px;border-radius:3px;
+  font-size:9px;letter-spacing:.09em;font-weight:600;
+  color:var(--crit);border:1px solid currentColor;opacity:.85;
+  vertical-align:1px;
+}
+.field.missing input,.field.missing select,.field.missing textarea{border-color:var(--crit)}
+input[type=text],input[type=password],input[type=number],input[type=date],input[type=email],select,textarea{
+  width:100%;background:var(--surface);color:var(--ink);
+  border:1px solid var(--rule-strong);border-radius:2px;padding:9px 11px;
+  font-family:inherit;font-size:14px;
+}
+input[type=number],input.mono,input[type=date]{
+  font-family:"IBM Plex Mono",monospace;font-variant-numeric:tabular-nums;
+}
+textarea{min-height:78px;resize:vertical;line-height:1.5}
+select{cursor:pointer}
+input:focus-visible,select:focus-visible,textarea:focus-visible,button:focus-visible,[tabindex]:focus-visible{
+  outline:2px solid var(--accent-2);outline-offset:2px;
+}
+input:disabled,select:disabled,textarea:disabled{background:var(--surface-2);color:var(--ink-3);cursor:not-allowed}
+.inputrow{display:flex;gap:0;align-items:stretch}
+.inputrow .prefix{
+  display:flex;align-items:center;padding:0 11px;border:1px solid var(--rule-strong);border-right:0;
+  background:var(--surface-2);color:var(--ink-2);font-family:"IBM Plex Mono",monospace;
+  border-radius:2px 0 0 2px;white-space:nowrap;
+}
+.inputrow .prefix + input{border-radius:0 2px 2px 0}
+.inputrow.split{gap:8px}
+.inputrow.split input{flex:1}
+.checkline{display:flex;gap:10px;align-items:flex-start;font-size:13px;line-height:1.55}
+.checkline input[type=checkbox],.checkline input[type=radio]{width:auto;margin:3px 0 0;accent-color:var(--accent);flex:none}
+.radiocards{display:grid;gap:9px}
+.radiocard{
+  display:flex;gap:11px;align-items:flex-start;border:1px solid var(--rule-strong);border-radius:2px;
+  padding:12px 14px;cursor:pointer;background:var(--surface);
+}
+.radiocard:hover{border-color:var(--accent)}
+.radiocard.sel{border-color:var(--accent);background:var(--accent-wash);box-shadow:inset 2px 0 0 var(--accent)}
+.radiocard input{margin-top:2px;flex:none}
+/* The label and its explanation are spans, and an inline span neither takes a
+   top margin nor starts a new line — which ran them together as
+   "I will pay the tax myselfTransfer ₹84,518". They have to be blocks. */
+.radiocard>span{display:block;flex:1 1 auto;min-width:0}
+.radiocard .t{display:block;font-size:13.5px;font-weight:500}
+.radiocard .d{display:block;font-size:12px;color:var(--ink-2);margin-top:3px;line-height:1.5}
+
+
+/* password field with a reveal button */
+.pwwrap{position:relative;display:block}
+.pwwrap input{padding-right:44px;width:100%}
+.pwwrap .eye{
+  position:absolute;top:0;right:0;height:100%;width:42px;
+  display:grid;place-items:center;
+  background:none;border:0;padding:0;cursor:pointer;color:var(--ink-3);
+}
+.pwwrap .eye:hover{color:var(--accent)}
+.pwwrap .eye:focus-visible{outline:2px solid var(--accent);outline-offset:-2px}
+
+
+/* file input */
+.filebox{border:1px dashed var(--rule-strong);border-radius:2px;padding:13px 14px;background:var(--surface-2)}
+.filebox input[type=file]{width:100%;font-size:12.5px;font-family:inherit}
+.filebox .cur{font-size:12px;margin-top:9px;display:flex;gap:9px;align-items:center;flex-wrap:wrap}
+.filebox .cur .name{font-family:"IBM Plex Mono",monospace;font-size:11.5px}
+
+
+/* ---------------- buttons ---------------- */
+.btn{
+  font:inherit;font-weight:500;font-size:13.5px;cursor:pointer;border-radius:2px;
+  padding:9px 16px;border:1px solid var(--accent);background:var(--accent);color:#fff;
+  white-space:nowrap;
+}
+.btn:hover{background:var(--accent-2);border-color:var(--accent-2)}
+.btn:disabled{opacity:.45;cursor:not-allowed}
+.btn.ghost{background:none;color:var(--ink-2);border-color:var(--rule-strong)}
+.btn.ghost:hover{color:var(--accent);border-color:var(--accent);background:var(--surface)}
+.btn.danger{background:none;color:var(--crit);border-color:#e8c9c3}
+.btn.danger:hover{background:var(--crit-wash);border-color:var(--crit)}
+.btn.small{font-size:12px;padding:6px 11px}
+.btn.link{background:none;border:0;color:var(--accent);padding:0;font-size:13px;text-decoration:underline;text-underline-offset:2px}
+.btn.link:hover{background:none;color:var(--accent-2)}
+.btn.block{width:100%;text-align:center}
+
+
+/* ---------------- settlement note (dot leaders) ---------------- */
+.note{background:var(--surface);border:1px solid var(--rule-strong);border-radius:2px;box-shadow:var(--shadow);overflow:hidden}
+.note .engrave{height:5px;border-bottom:1px solid var(--rule-strong);background:repeating-linear-gradient(90deg,var(--accent) 0 2px,transparent 2px 6px);opacity:.5}
+.note h3{font-family:"Newsreader",Georgia,serif;font-weight:400;font-size:16.5px;margin:0;padding:14px 17px 0}
+.note .subh{padding:3px 17px 0;font-size:11.5px;color:var(--ink-2)}
+.lines{padding:13px 17px 15px;display:flex;flex-direction:column;gap:8px}
+.line{display:flex;align-items:baseline;gap:6px;font-size:13px}
+.line .lbl{color:var(--ink-2)}
+.line .lead{flex:1;border-bottom:1px dotted var(--rule-strong);min-width:10px;transform:translateY(-3px)}
+.line .amt{font-family:"IBM Plex Mono",monospace;font-variant-numeric:tabular-nums;white-space:nowrap}
+.line.sub .lbl,.line.sub .amt{font-size:11px;color:var(--ink-3)}
+.line.out .amt{color:var(--crit)}
+.line.total{margin-top:5px;padding-top:10px;border-top:1px solid var(--rule-strong)}
+.line.total .lbl{color:var(--ink);font-weight:500}
+.line.total .amt{font-size:17px;font-weight:500}
+/* The amount spelled out, under the figure it belongs to. */
+.line.words .lbl{font-size:11px;color:var(--ink-3);font-style:italic;line-height:1.5}
+
+
+/* "How was this worked out" — an ⓘ against every calculated figure. */
+.ibtn{
+  display:inline-flex;align-items:center;justify-content:center;
+  width:15px;height:15px;margin-left:5px;padding:0;
+  border:1px solid var(--rule-strong);border-radius:50%;
+  background:transparent;color:var(--ink-3);cursor:pointer;
+  font-family:"Newsreader",Georgia,serif;font-style:italic;font-size:10.5px;
+  line-height:1;vertical-align:1px;
+}
+.ibtn:hover{border-color:var(--accent);color:var(--accent)}
+.ibtn:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+.formula{
+  margin-top:12px;padding:12px 14px;border-radius:5px;
+  background:var(--surface-2);border:1px solid var(--rule);
+  font-family:"IBM Plex Mono",monospace;font-size:12px;line-height:1.6;color:var(--ink-2);
+}
+/* A figure with its words underneath, for anything someone pays against. */
+.amt-words{display:inline-flex;flex-direction:column;gap:2px}
+.amt-words em{font-style:italic;font-size:11px;color:var(--ink-3);font-family:inherit}
+
+
+/* ---------------- login ---------------- */
+.authwrap{min-height:100vh;display:grid;grid-template-columns:1fr;place-items:center;padding:36px 20px}
+.authcard{width:100%;max-width:412px}
+.authcard .mast{margin-bottom:22px}
+.authcard .mast h1{font-family:"Newsreader",Georgia,serif;font-weight:400;font-size:31px;margin:5px 0 0;letter-spacing:-.014em}
+.authcard .mast h1 em{font-style:italic;color:var(--accent)}
+.authpanel{background:var(--surface);border:1px solid var(--rule-strong);border-radius:2px;box-shadow:var(--shadow-lift);overflow:hidden}
+.authpanel .engrave{height:5px;background:repeating-linear-gradient(90deg,var(--accent) 0 2px,transparent 2px 6px);opacity:.5;border-bottom:1px solid var(--rule-strong)}
+.authpanel .bd{padding:22px}
+.authfoot{margin-top:16px;font-size:12px;color:var(--ink-3);line-height:1.6}
+.authtabs{display:flex;border-bottom:1px solid var(--rule)}
+.authtabs button{
+  flex:1;font:inherit;font-size:12.5px;background:none;border:0;border-bottom:2px solid transparent;
+  padding:11px 8px;cursor:pointer;color:var(--ink-2);
+}
+.authtabs button[aria-current="true"]{color:var(--accent);border-bottom-color:var(--accent);font-weight:500}
+
+
+/* ---------------- toast & modal ---------------- */
+.toast{
+  position:fixed;left:50%;bottom:26px;transform:translateX(-50%);
+  max-width:min(560px,calc(100vw - 32px));
+  /* Above the dialog (70) and the working screen (400). It used to sit at 60,
+     so an error raised from inside a dialog was drawn BEHIND it — a thin red
+     sliver at the edge of the screen, which is no message at all. */
+  z-index:500;
+  background:var(--ink);color:var(--ground);padding:12px 17px;border-radius:2px;
+  font-size:13px;line-height:1.5;box-shadow:var(--shadow-lift);
+  /* Several problems are reported together, one per line. Without this the
+     bullets ran into one another as a single paragraph. */
+  white-space:pre-line;
+}
+.toast.err{background:var(--crit)}
+.toast.ok{background:var(--accent)}
+
+
+.modal{position:fixed;inset:0;background:rgba(20,33,28,.5);z-index:70;display:grid;place-items:center;padding:22px}
+.modal-card{
+  background:var(--surface);border-radius:2px;box-shadow:var(--shadow-lift);
+  max-width:920px;width:100%;max-height:88vh;overflow:auto;position:relative;
+}
+.modal-x{
+  position:absolute;top:9px;right:11px;background:var(--surface);border:1px solid var(--rule);
+  width:29px;height:29px;border-radius:2px;font-size:19px;line-height:1;cursor:pointer;color:var(--ink-2);
+}
+.modal-x:hover{border-color:var(--accent);color:var(--accent)}
+.modal-bd{padding:24px}
+.docview{padding:0;background:var(--surface-2)}
+.docview img{display:block;max-width:100%;max-height:78vh;margin:0 auto;object-fit:contain}
+.docview iframe{display:block;width:100%;height:78vh;border:0;background:#fff}
+/* PDF pages, drawn to canvas. Chrome refuses to run its PDF viewer inside a
+   sandboxed frame, and the whole portal lives in one — so the pages are
+   rendered here instead of handed to a plugin that will not start. */
+.docview .pdfpages{max-height:78vh;overflow:auto;padding:14px;background:var(--surface-2)}
+.docview .pdfpages canvas{
+  display:block;margin:0 auto 14px;max-width:100%;height:auto;background:#fff;
+  box-shadow:0 1px 6px rgba(20,52,42,.18);
+}
+.docview .pdfpages canvas:last-child{margin-bottom:0}
+.docview .pdfwait{padding:34px;text-align:center;color:var(--ink-3);font-size:13px}
+.docview .bar{padding:11px 46px 11px 16px;border-bottom:1px solid var(--rule);background:var(--surface);font-size:12.5px;display:flex;gap:12px;align-items:center;justify-content:space-between}
+
+
+/* ---------------- admin review ---------------- */
+.reviewrow{border:1px solid var(--rule);border-radius:2px;background:var(--surface);overflow:hidden}
+.reviewrow + .reviewrow{margin-top:13px}
+.reviewrow > .hd{
+  padding:11px 15px;border-bottom:1px solid var(--rule);background:var(--surface-2);
+  display:flex;justify-content:space-between;gap:12px;align-items:center;flex-wrap:wrap;
+}
+.reviewrow > .hd .t{font-size:13px;font-weight:600;display:flex;align-items:center;gap:8px}
+/* A verified section is done with: quieter ground, so what is left to review
+   is what stands out. */
+.reviewrow.isok > .hd{background:var(--accent-wash)}
+.reviewrow.isok > .bd{opacity:.72}
+.pickall{display:flex;align-items:center;gap:8px;font-size:13px;cursor:pointer}
+.reviewrow > .bd{padding:15px}
+.kv{display:grid;grid-template-columns:auto 1fr;gap:7px 16px;font-size:13px;align-items:baseline}
+.kv dt{color:var(--ink-2);white-space:nowrap;margin:0}
+.kv dd{margin:0;font-family:"IBM Plex Mono",monospace;font-variant-numeric:tabular-nums;word-break:break-word}
+.kv dd.plain{font-family:inherit}
+.doclist{display:flex;gap:9px;flex-wrap:wrap;margin-top:13px}
+.docchip{
+  display:inline-flex;align-items:center;gap:8px;border:1px solid var(--rule-strong);border-radius:2px;
+  padding:7px 11px;background:var(--surface);font-size:12.5px;cursor:pointer;font-family:inherit;color:var(--ink);
+}
+.docchip:hover{border-color:var(--accent);color:var(--accent)}
+.docchip .ic{font-size:13px}
+.docchip.missing{border-style:dashed;color:var(--ink-3);cursor:default}
+.docchip.missing:hover{border-color:var(--rule-strong);color:var(--ink-3)}
+
+
+.remarks{white-space:pre-line;font-size:12.5px;color:var(--ink-2);background:var(--surface-2);border-left:3px solid var(--warn);padding:11px 13px;border-radius:2px;margin-top:12px}
+.trail{font-size:12px;color:var(--ink-2);max-height:280px;overflow:auto;border:1px solid var(--rule);border-radius:2px}
+.trail .t{display:grid;grid-template-columns:130px 100px 1fr;gap:10px;padding:7px 11px;border-bottom:1px solid var(--rule)}
+.trail .t:last-child{border-bottom:0}
+.trail .t span:first-child{font-family:"IBM Plex Mono",monospace;font-size:11px;color:var(--ink-3)}
+
+
+/* ---------------- notice ---------------- */
+.noticebox{background:var(--surface);border:1px solid var(--rule-strong);border-radius:2px;padding:24px 26px;max-height:520px;overflow:auto;box-shadow:inset 0 -14px 18px -16px rgba(20,33,28,.2)}
+.noticebox .doc{max-width:none}
+
+
+/* ---------------- misc ---------------- */
+.empty{padding:34px 18px;text-align:center;color:var(--ink-3);font-size:13px}
+/* In-flight indicator across the top of the window. Deliberately thin and
+   quiet: it is there to say "something is happening", not to draw the eye. */
+.netbar{
+  position:fixed;top:0;left:0;right:0;height:2px;z-index:200;
+  background:linear-gradient(90deg,transparent,var(--accent),transparent);
+  background-size:40% 100%;background-repeat:no-repeat;
+  animation:netslide 1.1s ease-in-out infinite;
+}
+@keyframes netslide{
+  0%{background-position:-40% 0}
+  100%{background-position:140% 0}
+}
+/* The working screen: shown when a request is slow enough to look stuck.
+   It holds the page still behind a wash so nothing can be half-clicked while
+   the server is thinking, and uses the wait to say something worth reading. */
+.working{
+  position:fixed;inset:0;z-index:400;display:grid;place-items:center;
+  background:rgba(247,246,242,.86);backdrop-filter:blur(2px);
+}
+.working-card{
+  text-align:center;max-width:520px;padding:26px 28px;
+}
+.working-what{margin-top:16px;font-size:14px;font-weight:500;letter-spacing:.01em}
+.working .boot-fact{margin-top:14px}
+@media (prefers-reduced-motion:reduce){
+  .netbar{animation:none;background:var(--accent);opacity:.5}
+}
+.spinner{display:inline-block;width:13px;height:13px;border:2px solid rgba(255,255,255,.4);border-top-color:#fff;border-radius:50%;animation:spin .7s linear infinite;vertical-align:-2px;margin-right:7px}
+.btn.ghost .spinner{border-color:var(--rule-strong);border-top-color:var(--accent)}
+.divider{height:1px;background:var(--rule);margin:22px 0}
+.tag{font-size:11px;color:var(--ink-3);font-family:"IBM Plex Mono",monospace}
+.srow{display:flex;gap:10px;align-items:center;flex-wrap:wrap}
+.grow{flex:1;min-width:120px}
+
+
+/* Keep the summary in view while amounts are being typed, so the tally the
+   figure is being checked against does not scroll away mid-entry. */
+@media (min-width:900px){
+  .grid2 > div > .note{position:sticky;top:76px}
+}
+
+
+@media (max-width:820px){
+  .topbar-in{flex-wrap:wrap;gap:10px;padding:9px 14px}
+  /* The header is the one part of the portal that cannot wrap its way out of
+     trouble: the company line, the portal name and the signed-in block are
+     all nowrap by design, so on a phone they ran off the side and the top
+     strip appeared cut in half. On a narrow screen they wrap and truncate
+     instead — and the plan tagline, which is decoration, goes away. */
+  .brand{flex:1 1 100%;gap:10px}
+  .brand > div{flex-wrap:wrap;gap:2px 10px}
+  .brand .co{white-space:normal;font-size:9.5px;line-height:1.35}
+  .brand .nm{white-space:normal;font-size:17px;line-height:1.15}
+  .logo.mark{height:26px}
+  .who{
+    flex:1 1 100%;flex-wrap:wrap;white-space:normal;
+    justify-content:space-between;gap:8px 12px;
+  }
+  .who b{overflow:hidden;text-overflow:ellipsis;white-space:nowrap;max-width:52vw}
+  .topnav{flex:1 1 100%;overflow-x:auto;flex-wrap:nowrap;-webkit-overflow-scrolling:touch}
+  .topnav button{flex:0 0 auto}
+  .page{padding:20px 16px 70px}
+  .fig{padding:14px 14px 15px 0}
+  .trail .t{grid-template-columns:1fr;gap:2px}
+  /* The step rail scrolls sideways rather than crushing six labels into a
+     phone width and making them unreadable. */
+  /* nowrap matters: the base rule wraps, which would stack the steps into a
+     tall block instead of letting them scroll. */
+  .stepper{overflow-x:auto;flex-wrap:nowrap;-webkit-overflow-scrolling:touch}
+  .step{min-width:132px;flex:0 0 auto}
+  .figures{grid-template-columns:repeat(auto-fit,minmax(136px,1fr))}
+  /* A number pad is what these fields want on a phone. */
+  .inputrow input,input[type=number]{font-size:16px}
+  /* The dialog body only — .docview fills its card edge to edge. */
+  .modal-bd{padding:18px 16px}
+  .docview iframe{height:70vh}
+  .ackhd .btn{margin-left:0;width:100%}
+}
+/* Full-width action buttons on a phone: a payment form is not the place to
+   hunt for a 90px target. */
+@media (max-width:560px){
+  .row > .btn{flex:1 1 100%}
+  .amt-words em{font-size:10.5px}
+}
+@media (prefers-reduced-motion:reduce){*{animation-duration:.01ms !important;transition:none !important}}
+</style>
+
+
