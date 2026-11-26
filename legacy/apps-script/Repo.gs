@@ -579,7 +579,7 @@ const Util = {
 
     // Accounting parentheses mean negative.
     let sign = 1;
-    if (/^$/.test(s)) { sign = -1; s = s.slice(1, -1); }
+    if (/^\(.*\)$/.test(s)) { sign = -1; s = s.slice(1, -1); }
 
 
     s = s

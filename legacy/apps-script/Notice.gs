@@ -244,7 +244,7 @@ const Notice = (function () {
 
       '<div class="to">' +
       '<p>To,<br><b>' + Util.escapeHtml(cfg('COMPANY_NAME')) + '</b>' +
-      (former ? '<br>(' + Util.escapeHtml(former.replace(/^$/g, '')) + ')' : '') +
+      (former ? '<br>(' + Util.escapeHtml(former.replace(/^\(|\)$/g, '')) + ')' : '') +
       (address ? '<br>Add: ' + Util.escapeHtml(address).replace(/\n/g, '<br>') : '') +
       '</p></div>' +
 

@@ -771,8 +771,8 @@ const Domain = (function () {
     }
 
 
-    const looksNsdl = /^IN[A-Z0-9]{6}/.test(clientId);
-    const looksCdsl = /^[0-9]{8}/.test(clientId);
+    const looksNsdl = /^IN[A-Z0-9]{6}$/.test(dpId) && /^[0-9]{8}$/.test(clientId);
+    const looksCdsl = /^[0-9]{8}$/.test(dpId) && /^[0-9]{8}$/.test(clientId);
 
 
     if (type === 'NSDL' && !looksNsdl) {

@@ -90,7 +90,7 @@ const Auth = (function () {
   function verifyPassword(password, salt, stored) {
     const s = Util.trim(stored);
     if (!s) return { ok: false, stale: false };
-    const m = s.match(/^r(\d+)\/);
+    const m = s.match(/^r(\d+)\$(.*)$/);
     const rounds = m ? Number(m[1]) : APP.LEGACY_PASSWORD_ITERATIONS;
     const digest = m ? m[2] : s;
     return {
