@@ -98,3 +98,14 @@ describe('config', () => {
     expect(paymentReference(DEFAULT_SETTINGS, { employeeId: 'PW42', name: 'Asha Rao' })).toBe('ESOP Exercise – PW42 – Asha Rao');
   });
 });
+
+import { toDateKey as toDateKeyIst } from '../../src/domain/util';
+describe('toDateKey with ISO instants', () => {
+  it('uses the India date of a zoned instant', () => {
+    expect(toDateKeyIst('2026-11-20T19:00:00.000Z')).toBe('2026-11-21');
+    expect(toDateKeyIst('2026-11-20T10:00:00Z')).toBe('2026-11-20');
+    expect(toDateKeyIst('2026-11-20T23:30:00+05:30')).toBe('2026-11-20');
+    expect(toDateKeyIst('2026-11-20')).toBe('2026-11-20');
+    expect(toDateKeyIst('2026-11-20 23:30:00')).toBe('2026-11-20');
+  });
+});

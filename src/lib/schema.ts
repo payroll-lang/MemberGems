@@ -213,6 +213,8 @@ export interface ApplicationDoc {
 
 export interface ApplicationLineDoc {
   lineId: string;
+  /** Added by the participant portal: the parent application, for convenience in exports. */
+  appId: string;
   grantId: string;
   planName: string;
   multiplier: number;
@@ -301,8 +303,35 @@ export interface AuditDoc {
   details: string;
 }
 
+/**
+ * What a stored file evidences. Added by the participant portal; it fixes
+ * which application field a file may be attached to.
+ */
+export type FilePurpose =
+  | 'cml'
+  | 'pan'
+  | 'exerciseProof'
+  | 'taxProof'
+  | 'notice'
+  | 'partnerCml'
+  | 'partnerTaxProof';
+
 export interface FileDoc {
   fileId: string;
+  /** Added: what the file is for (see FilePurpose). */
+  purpose: FilePurpose;
+  /**
+   * Added: 'pending' from the moment an upload URL is issued until the
+   * server has checked the uploaded object's type and size; then 'ready'.
+   * Only a 'ready' file can be attached to an application.
+   */
+  status: 'pending' | 'ready';
+  /** Added: the name of the file on the uploader's device (display only). */
+  originalName: string;
+  /** Added: when the upload was confirmed. */
+  confirmedAt: string;
+  /** Added: for a fund partner's upload, the request it belongs to. */
+  requestId?: string;
   ownerEmployeeId: string;
   appId: string;
   label: string;

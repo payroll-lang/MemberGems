@@ -1,6 +1,7 @@
 import { timingSafeEqual } from 'node:crypto';
 import { env } from '@/lib/env';
 import { bucket, db } from '@/lib/firebase';
+import { ensureBucketCors, portalOrigins } from '@/server/files';
 
 /**
  * Infrastructure check: can the server reach Firestore and the Storage bucket
@@ -34,6 +35,12 @@ export async function GET(request: Request) {
     }
   } catch (err) {
     result.storage = `error: ${(err as Error).message}`;
+  }
+  try {
+    // Direct browser uploads (signed PUT URLs) need the bucket to accept the portal's origin.
+    result.storageCors = (await ensureBucketCors()) + ' for ' + portalOrigins().join(', ');
+  } catch (err) {
+    result.storageCors = `error: ${(err as Error).message}`;
   }
   result.legacyPepper = e.LEGACY_ESOP_PEPPER ? `present (${e.LEGACY_ESOP_PEPPER.length} chars)` : 'missing';
   return Response.json(result, { headers: { 'cache-control': 'no-store' } });

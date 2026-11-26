@@ -94,6 +94,15 @@ export function toDateKey(v: unknown): string {
   }
   const s = String(v).trim();
   if (!s || s === '-' || s === '0') return '';
+  // An ISO instant with a zone (e.g. ...T19:00:00Z, +05:30) is a moment in
+  // time: take its India date, not the calendar date written in UTC.
+  if (/^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}(:\d{2}(\.\d+)?)?(Z|[+-]\d{2}:?\d{2})$/.test(s)) {
+    const ms = Date.parse(s);
+    if (!isNaN(ms)) {
+      const p = istPartsOfInstant(ms);
+      return ymd(p.y, p.m, p.d);
+    }
+  }
   let m = s.match(/^(\d{4})-(\d{1,2})-(\d{1,2})/);
   if (m) return ymd(Number(m[1]), Number(m[2]) - 1, Number(m[3]));
   m = s.match(/^(\d{1,2})[/-](\d{1,2})[/-](\d{4})$/);
