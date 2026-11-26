@@ -60,3 +60,7 @@ input:focus { outline: 2px solid var(--accent-2); outline-offset: 1px; }
 .tabs { display: flex; gap: 4px; border-bottom: 1px solid var(--rule); margin: 18px 0 4px; }
 .tabs a { padding: 8px 10px; text-decoration: none; color: var(--ink-2); border-bottom: 2px solid transparent; }
 .tabs a[aria-current="page"] { color: var(--accent); border-bottom-color: var(--accent); }
+table.kv { width: 100%; border-collapse: collapse; font-size: 14px; }
+table.kv td { padding: 5px 0; border-bottom: 1px solid var(--rule); }
+table.kv td.num { text-align: right; }
+fieldset label { display: flex; gap: 8px; align-items: center; margin: 6px 0; color: var(--ink); font-size: 14px; }

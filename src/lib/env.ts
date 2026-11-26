@@ -20,6 +20,8 @@ const schema = z.object({
   PASSWORD_PEPPER: z.string().min(32),
   /** Public base URL used in email links, e.g. https://esop.pw.live */
   PORTAL_URL: z.string().url().default('http://localhost:3000'),
+  /** Passphrase for the one-time data import page (/setup/import). Remove after go-live. */
+  SETUP_KEY: z.string().min(12).optional(),
   /** Secret that scheduled jobs must present (Authorization: Bearer ...). */
   CRON_SECRET: z.string().min(16).optional(),
 });

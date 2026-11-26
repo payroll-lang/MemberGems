@@ -4,6 +4,8 @@ import type { NextConfig } from 'next';
 // request. Cache Components / Partial Prefetching are left off deliberately.
 const nextConfig: NextConfig = {
   poweredByHeader: false,
+  // The workbook upload on /setup/import (about 1 MB). Vercel caps bodies at 4.5 MB.
+  experimental: { serverActions: { bodySizeLimit: '4mb' } },
   serverExternalPackages: ['@node-rs/argon2', 'firebase-admin'],
   async headers() {
     return [
