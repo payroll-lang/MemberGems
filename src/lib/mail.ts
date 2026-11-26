@@ -47,6 +47,19 @@ export type SendResult =
 
 const MAX_ATTACHMENT_BYTES = 20 * 1024 * 1024;
 
+/**
+ * Settings for mail, kept for a minute: outside a React render (route
+ * handlers, the batch jobs) loadSettings is not request-cached, and a bulk
+ * send must not re-read three documents per email.
+ */
+let settingsCache: { at: number; value: Settings } | null = null;
+async function mailSettings(): Promise<Settings> {
+  if (settingsCache && Date.now() - settingsCache.at < 60_000) return settingsCache.value;
+  const value = await loadSettings();
+  settingsCache = { at: Date.now(), value };
+  return value;
+}
+
 function bool(v: string | undefined, dflt: boolean): boolean {
   const s = String(v ?? '').trim().toLowerCase();
   if (!s) return dflt;
@@ -162,7 +175,7 @@ export async function sendTemplateResult(
 
   let settings: Settings | null = null;
   try {
-    settings = await loadSettings();
+    settings = await mailSettings();
   } catch (e) {
     console.error('mail: settings unavailable', e);
   }
@@ -231,7 +244,7 @@ export async function sendTemplateResult(
 export async function sendToAdmins(template: TemplateName, data: MailData, opts: SendOptions = {}): Promise<boolean> {
   let list: string[] = [];
   try {
-    list = (await loadSettings()).adminEmails;
+    list = (await mailSettings()).adminEmails;
   } catch (e) {
     console.error('mail: settings unavailable for admin list', e);
   }

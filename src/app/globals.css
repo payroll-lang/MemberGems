@@ -233,3 +233,10 @@ details.tranches > summary { cursor: pointer; font-size: 14px; }
   .noticebox { padding: 12px; }
   .row.end { justify-content: flex-start; }
 }
+
+/* Fund partner portal */
+.btn.danger { background: var(--crit); border-color: var(--crit); color: #fff; }
+.btn.ghost.danger { background: transparent; color: var(--crit); border: 1px solid var(--crit); }
+.divider { border-top: 1px solid var(--rule); margin: 22px 0 14px; }
+.decline > summary { cursor: pointer; color: var(--crit); font-weight: 500; }
+.decline[open] > summary { margin-bottom: 10px; }

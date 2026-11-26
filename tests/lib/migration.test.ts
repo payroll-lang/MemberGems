@@ -39,6 +39,8 @@ describe('legacy workbook import', () => {
     expect(p.config.ALLOWED_PLANS).toBe('ESOP Plan 2022, ESOP Plan 2025');
     expect(p.config.PORTAL_URL).toBeUndefined();
     expect(p.config.FLAT_TAX_ROUNDING).toBe('rupee');
+    expect(p.config.EMAILS_ENABLED).toBe('false');
+    expect(p.config.BULK_EMAILS_ENABLED).toBe('false');
     expect(p.employees.map((e) => e.employeeId)).toEqual(['E100', 'E101']);
     expect(p.employees[0]).toMatchObject({ accessEmail: 'one@example.com', pan: 'ABCDE1234F', blocked: true, demat: { accountType: 'NSDL' } });
     expect(p.grants).toHaveLength(1);

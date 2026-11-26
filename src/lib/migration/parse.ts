@@ -129,6 +129,10 @@ export async function parseWorkbook(buffer: ArrayBuffer | Buffer, importedBy: st
   const plans = (config.ALLOWED_PLANS ?? '').split(',').map((p) => p.trim()).filter((p) => p && p.toLowerCase() !== 'test plan');
   config.ALLOWED_PLANS = plans.join(', ');
   config.FLAT_TAX_ROUNDING = 'rupee';
+  // Never email real people from an imported copy: the ESOP team switches
+  // these on in Settings at go-live.
+  config.EMAILS_ENABLED = 'false';
+  config.BULK_EMAILS_ENABLED = 'false';
   delete config.PORTAL_URL; // the Apps Script URL; the new URL comes from the environment
   delete config.LOGO_URL;
   const allowedPlans = new Set(plans);

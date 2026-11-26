@@ -81,3 +81,17 @@ export async function gmailSend(sender: string, rawBase64Url: string): Promise<G
     return { ok: false, error: describeGmailError(e) };
   }
 }
+
+/**
+ * Can the service account obtain a gmail.send token for the sender? Sends
+ * nothing. For the go-live check (/api/jobs/mail-check).
+ */
+export async function checkGmailDelegation(sender: string): Promise<{ ok: boolean; clientId: string; detail: string }> {
+  const clientId = delegationClientId();
+  try {
+    const t = await jwtFor(sender).getAccessToken();
+    return { ok: !!t.token, clientId, detail: t.token ? 'token issued for ' + sender + ' with scope ' + GMAIL_SEND_SCOPE : 'no token returned' };
+  } catch (e) {
+    return { ok: false, clientId, detail: describeGmailError(e) };
+  }
+}
