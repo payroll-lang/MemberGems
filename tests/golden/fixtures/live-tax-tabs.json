@@ -1,0 +1,159 @@
+{
+  "_source": "Live sheet 'ESOP Exercise Portal — Data', tabs TaxSlabs / TaxSurcharge / TaxRules, read 2026-11-26 (formatted values as returned by the Sheets API).",
+  "TaxSlabs": [
+    {
+      "Regime": "New",
+      "AboveAmount": "0",
+      "RatePercent": "0"
+    },
+    {
+      "Regime": "New",
+      "AboveAmount": "400000",
+      "RatePercent": "5"
+    },
+    {
+      "Regime": "New",
+      "AboveAmount": "800000",
+      "RatePercent": "10"
+    },
+    {
+      "Regime": "New",
+      "AboveAmount": "1200000",
+      "RatePercent": "15"
+    },
+    {
+      "Regime": "New",
+      "AboveAmount": "1600000",
+      "RatePercent": "20"
+    },
+    {
+      "Regime": "New",
+      "AboveAmount": "2000000",
+      "RatePercent": "25"
+    },
+    {
+      "Regime": "New",
+      "AboveAmount": "2400000",
+      "RatePercent": "30"
+    },
+    {
+      "Regime": "Old",
+      "AboveAmount": "0",
+      "RatePercent": "0"
+    },
+    {
+      "Regime": "Old",
+      "AboveAmount": "250000",
+      "RatePercent": "5"
+    },
+    {
+      "Regime": "Old",
+      "AboveAmount": "500000",
+      "RatePercent": "20"
+    },
+    {
+      "Regime": "Old",
+      "AboveAmount": "1000000",
+      "RatePercent": "30"
+    }
+  ],
+  "TaxSurcharge": [
+    {
+      "Regime": "New",
+      "AboveAmount": "5000000",
+      "RatePercent": "10"
+    },
+    {
+      "Regime": "New",
+      "AboveAmount": "10000000",
+      "RatePercent": "15"
+    },
+    {
+      "Regime": "New",
+      "AboveAmount": "20000000",
+      "RatePercent": "25"
+    },
+    {
+      "Regime": "Old",
+      "AboveAmount": "5000000",
+      "RatePercent": "10"
+    },
+    {
+      "Regime": "Old",
+      "AboveAmount": "10000000",
+      "RatePercent": "15"
+    },
+    {
+      "Regime": "Old",
+      "AboveAmount": "20000000",
+      "RatePercent": "25"
+    },
+    {
+      "Regime": "Old",
+      "AboveAmount": "50000000",
+      "RatePercent": "37"
+    }
+  ],
+  "TaxRules": [
+    {
+      "Regime": "New",
+      "Rule": "CessPercent",
+      "Value": "4"
+    },
+    {
+      "Regime": "Old",
+      "Rule": "CessPercent",
+      "Value": "4"
+    },
+    {
+      "Regime": "New",
+      "Rule": "RoundIncomeTo",
+      "Value": "10"
+    },
+    {
+      "Regime": "Old",
+      "Rule": "RoundIncomeTo",
+      "Value": "10"
+    },
+    {
+      "Regime": "New",
+      "Rule": "RebateIncomeLimit",
+      "Value": "1200000"
+    },
+    {
+      "Regime": "Old",
+      "Rule": "RebateIncomeLimit",
+      "Value": "500000"
+    },
+    {
+      "Regime": "New",
+      "Rule": "RebateMaxAmount",
+      "Value": "60000"
+    },
+    {
+      "Regime": "Old",
+      "Rule": "RebateMaxAmount",
+      "Value": "12500"
+    },
+    {
+      "Regime": "New",
+      "Rule": "RebateMarginalRelief",
+      "Value": "TRUE"
+    },
+    {
+      "Regime": "Old",
+      "Rule": "RebateMarginalRelief",
+      "Value": "FALSE"
+    },
+    {
+      "Regime": "New",
+      "Rule": "SurchargeMarginalRelief",
+      "Value": "TRUE"
+    },
+    {
+      "Regime": "Old",
+      "Rule": "SurchargeMarginalRelief",
+      "Value": "TRUE"
+    }
+  ]
+}
