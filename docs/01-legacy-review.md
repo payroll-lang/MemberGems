@@ -223,14 +223,17 @@ but items 1 to 3 are security weaknesses, so it is worth deciding whether to pat
     - "email each a one-time code": it doesn't;
     - the mobile-number message says overseas numbers are accepted: they aren't.
 
-### Rules to confirm with the ESOP team
-20. Grant expiry and separation date are stored but never enforced. Is that intended?
-21. `PendingAcceptance` grants can be exercised. Is that intended?
-22. A missing trading-day price silently falls back to any older price. Should there be a staleness
-    limit?
-23. Flat tax is to the paise; the sheet engine is in whole rupees. Should they be aligned?
-24. "Test Plan" is in `ALLOWED_PLANS`, and the data contains test applications. These should be excluded
-    from the production migration.
+### Rules confirmed with the ESOP team (2026-11-26)
+20. **Grant expiry and separation date: not enforced automatically.** The ESOP team decides case by case
+    and uses the existing block and eligibility controls.
+21. **`PendingAcceptance` grants: exercisable.** This is unchanged.
+22. **Missing share price: stop.** The new system will not fall back to an older price. If the price for
+    the trading day before the payment date is missing, the payment step is held and the ESOP team is
+    alerted. Exchange holidays must therefore be known, through a holiday calendar the admin can
+    maintain.
+23. **Flat-rate tax rounding:** answered "Flat-rate". *To be confirmed:* keep paise precision as today, or
+    round to whole rupees like the sheet engine.
+24. **"Test Plan": dropped.** It comes out of `ALLOWED_PLANS`, and test records are not migrated.
 
 ---
 
