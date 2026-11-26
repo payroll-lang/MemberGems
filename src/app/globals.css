@@ -240,3 +240,39 @@ details.tranches > summary { cursor: pointer; font-size: 14px; }
 .divider { border-top: 1px solid var(--rule); margin: 22px 0 14px; }
 .decline > summary { cursor: pointer; color: var(--crit); font-weight: 500; }
 .decline[open] > summary { margin-bottom: 10px; }
+
+/* ---- ESOP team (admin) screens ---- */
+.page.wide { max-width: 1360px; }
+.adminnav { display: flex; flex-wrap: wrap; gap: 2px 4px; font-size: 13.5px; padding-bottom: 2px; }
+.adminnav a { padding: 6px 9px; text-decoration: none; color: var(--ink-2); border-bottom: 2px solid transparent; }
+.adminnav a:hover { color: var(--ink); }
+.adminnav a[aria-current="page"] { color: var(--accent); border-bottom-color: var(--accent); }
+fieldset.plain { border: 0; padding: 0; margin: 0; min-width: 0; }
+.filters { display: flex; flex-wrap: wrap; gap: 8px; align-items: flex-end; }
+.filters .field { margin: 0; }
+.filters select, .filters input { width: auto; }
+.page .filters input[type="text"], .page .filters input[type="search"] { min-width: 220px; }
+table.data tr.clickable { cursor: pointer; }
+table.data tr.clickable:hover td { background: var(--surface-2); }
+table.data td a.rowlink { color: inherit; text-decoration: none; }
+table.data td a.rowlink:hover { text-decoration: underline; }
+.notelist ul { margin: 6px 0 0; padding-left: 18px; font-size: 13px; max-height: 260px; overflow: auto; }
+td.code { font-size: 15px; letter-spacing: .12em; color: var(--accent); }
+.reviewrow { display: grid; grid-template-columns: minmax(150px, 220px) minmax(0, 1fr); gap: 12px; padding: 12px 0; border-bottom: 1px solid var(--rule); }
+.reviewrow:last-child { border-bottom: 0; }
+.reviewrow .acts { display: flex; flex-wrap: wrap; gap: 8px; align-items: flex-start; }
+.reviewrow textarea { min-height: 38px; }
+.inlineform { display: inline; margin: 0; }
+.inlineform fieldset { display: inline; }
+.docview { border: 1px solid var(--rule); border-radius: 3px; background: var(--surface-2); }
+.docview iframe { width: 100%; height: 640px; border: 0; display: block; }
+.docview img { max-width: 100%; display: block; margin: 0 auto; }
+.mini { font-size: 12px; color: var(--ink-3); }
+.pager { display: flex; gap: 8px; align-items: center; flex-wrap: wrap; font-size: 14px; }
+textarea.mono, .page textarea.mono { font-family: var(--font-mono), monospace; font-size: 12.5px; }
+.checks { display: flex; flex-wrap: wrap; gap: 4px 16px; }
+.checks label { display: inline-flex; gap: 6px; align-items: center; margin: 0; color: var(--ink); font-size: 14px; }
+.settinggrid { display: grid; grid-template-columns: minmax(180px, 260px) minmax(0, 1fr); gap: 8px 16px; align-items: start; }
+@media (max-width: 720px) {
+  .reviewrow, .settinggrid { grid-template-columns: minmax(0, 1fr); }
+}

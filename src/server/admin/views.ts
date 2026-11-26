@@ -1,6 +1,7 @@
 import 'server-only';
 import { isEnabled, type FmvPoint, type GrantBalance, type WindowState } from '@/domain';
-import type { WindowDoc } from '@/lib/schema';
+import { db } from '@/lib/firebase';
+import { COL, type FmvDoc, type WindowDoc } from '@/lib/schema';
 import { todayIst } from '@/lib/time';
 import { getApplication, linesOf, taxPaymentsOf } from '../applications';
 import { buildNoticeModel, noticeHtml } from '../core/notice';
@@ -110,6 +111,8 @@ export interface AdminDetail {
   /** The employee record is missing: the view is built without it. */
   missingEmployee: boolean;
   latestFmv: FmvPoint | null;
+  /** The stored price of the application's FMV day (for the ⓘ arithmetic). */
+  fmvRow: { date: string; open: number; close: number; fmv: number } | null;
   windowState: WindowState;
 }
 
@@ -119,10 +122,11 @@ export async function loadAdminDetail(appId: string): Promise<AdminDetail | null
   if (!app) return null;
   const settings = await loadSettings();
   const today = todayIst();
-  const [lines, payments, prs, latest, win, trail] = await Promise.all([
+  const [lines, payments, prs, latest, win, trail, fmvSnap] = await Promise.all([
     linesOf(app.appId), taxPaymentsOf(app.appId), partnerRequestsForApp(app.appId), latestPrice(), getWindow(app.windowId),
-    auditForApp(app.appId),
+    auditForApp(app.appId), app.fmvDate ? db().collection(COL.fmv).doc(app.fmvDate).get() : Promise.resolve(null),
   ]);
+  const fv = fmvSnap?.data() as Partial<FmvDoc> | undefined;
   const pr = prs.length ? prs[prs.length - 1] : null;
   const files = await fileMetas(fileIdsOf(app, payments, pr));
   let st: Awaited<ReturnType<typeof loadState>> | null = null;
@@ -155,6 +159,7 @@ export async function loadAdminDetail(appId: string): Promise<AdminDetail | null
     } : null,
     missingEmployee: !e,
     latestFmv: latest,
+    fmvRow: fv ? { date: app.fmvDate, open: Number(fv.openPrice) || 0, close: Number(fv.closePrice) || 0, fmv: Number(fv.fmv) || 0 } : null,
     windowState: stateOf(win, today),
   };
 }
